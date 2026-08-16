@@ -96,6 +96,12 @@ jobs:
         if: runner.os == 'Linux'
         uses: rui314/setup-mold@v1
 
+      - name: Install zst packaging dependency
+        if: runner.os == 'Linux' && contains(inputs.targets, 'zst')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
+
       - name: Rust cache restore
         uses: actions/cache/restore@v4.2.0
         id: cache_store
