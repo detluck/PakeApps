@@ -240,19 +240,17 @@ window.addEventListener("DOMContentLoaded", (_event) => {
         position: fixed !important;
         top: 12px !important;
         right: 16px !important;
+        left: auto !important;
+        width: 182px !important;
       }
 
-      #react-root [data-testid="sidebarColumn"] input[placeholder="Search"] {
-        width: 150px;
+      #react-root [data-testid="sidebarColumn"] form[role="search"] input[data-testid="SearchBox_Search_Input"] {
+        width: 100% !important;
       }
 
       #react-root [data-testid="sidebarColumn"] form[role="search"]:focus-within {
         width: 280px !important;
         backdrop-filter: blur(12px) !important;
-      }
-
-      #react-root [data-testid="sidebarColumn"] input[placeholder="Search"]:focus {
-        width: 234px !important;
       }
     }
 
@@ -262,19 +260,17 @@ window.addEventListener("DOMContentLoaded", (_event) => {
         position: fixed !important;
         top: 12px !important;
         right: 16px !important;
+        left: auto !important;
+        width: 182px !important;
       }
 
-      #react-root [data-testid="sidebarColumn"] input[placeholder="Search"] {
-        width: 150px;
+      #react-root [data-testid="sidebarColumn"] form[role="search"] input[data-testid="SearchBox_Search_Input"] {
+        width: 100% !important;
       }
 
       #react-root [data-testid="sidebarColumn"] form[role="search"]:focus-within {
         width: 374px !important;
         backdrop-filter: blur(12px) !important;
-      }
-
-      #react-root [data-testid="sidebarColumn"] input[placeholder="Search"]:focus {
-        width: 328px !important;
       }
 
       #react-root div[style*="left: -12px"] {
@@ -324,9 +320,14 @@ window.addEventListener("DOMContentLoaded", (_event) => {
       padding-top: 36px;
     }
   `;
-  const contentStyleElement = document.createElement("style");
-  contentStyleElement.textContent = contentCSS;
-  document.head.appendChild(contentStyleElement);
+  if (typeof window.__PAKE_INJECT_STYLE__ === "function") {
+    window.__PAKE_INJECT_STYLE__(contentCSS, "pake-content-style");
+  } else {
+    const contentStyleElement = document.createElement("style");
+    contentStyleElement.id = "pake-content-style";
+    contentStyleElement.textContent = contentCSS;
+    document.head.appendChild(contentStyleElement);
+  }
 
   // Top spacing adapts to head-hiding scenarios
   const topPaddingCSS = `
@@ -503,8 +504,7 @@ window.addEventListener("DOMContentLoaded", (_event) => {
   `;
   const isMac = /Mac/i.test(navigator.userAgent);
   if (hasImmersiveHeader(window["pakeConfig"])) {
-    const topPaddingStyleElement = document.createElement("style");
-    topPaddingStyleElement.textContent = isMac
+    const topPaddingCSSForPlatform = isMac
       ? topPaddingCSS
       : `
     #pake-top-dom:active {
@@ -525,6 +525,16 @@ window.addEventListener("DOMContentLoaded", (_event) => {
       z-index: 99999;
     }
     `;
-    document.head.appendChild(topPaddingStyleElement);
+    if (typeof window.__PAKE_INJECT_STYLE__ === "function") {
+      window.__PAKE_INJECT_STYLE__(
+        topPaddingCSSForPlatform,
+        "pake-top-padding-style",
+      );
+    } else {
+      const topPaddingStyleElement = document.createElement("style");
+      topPaddingStyleElement.id = "pake-top-padding-style";
+      topPaddingStyleElement.textContent = topPaddingCSSForPlatform;
+      document.head.appendChild(topPaddingStyleElement);
+    }
   }
 });

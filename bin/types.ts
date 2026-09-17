@@ -81,8 +81,14 @@ export interface PakeCliOptions {
   /** External scripts that need to be injected into the page. */
   inject: string[];
 
+  // Download directory in the packaged app; empty uses the system default.
+  downloadDir: string;
+
   // Set Api Proxy
   proxyUrl: string;
+
+  // Prompt for HTTP Basic credentials at runtime on macOS, default false.
+  basicAuth: boolean;
 
   // Installer language, valid for Windows users, default is en-US
   installerLanguage: string;
@@ -201,6 +207,8 @@ export interface PakeConfig {
   system_tray: PlatformSpecific<boolean>;
   system_tray_path: string;
   proxy_url: string;
+  download_dir: string;
+  basic_auth: boolean;
   multi_instance: boolean;
   multi_window: boolean;
   inject?: string[];

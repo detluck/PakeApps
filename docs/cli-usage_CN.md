@@ -68,6 +68,8 @@ pake [url] [options]
 
 `url` 是您需要打包的网页链接 🔗、本地 HTML 文件的路径，或包含根级 `index.html` 的静态文件目录（例如构建产物 `dist/`）。除非通过 `--config` 文件提供 `url`，此参数为必填。
 
+网页应用会在关闭或退出时记住主窗口的完整网址，下次启动时恢复；没有记录时打开打包网址，回到首页仍使用打包网址，隐身模式和本地 HTML 应用不保存或恢复网址。
+
 ```shell
 pake https://example.com --name Example
 pake ./page.html --name MyPage
@@ -537,6 +539,8 @@ pake https://chat.example.com --name ChatApp --multi-instance
 
 启用后，如果应用已在运行，再次启动会新开一个窗口，而不是仅聚焦已有窗口。
 
+在 macOS 上，通过 Cmd+N 打开的附加窗口会自动加入应用的原生标签页组；网页认证和 `window.open` 弹窗仍保持独立。
+
 这个选项可以改善基于弹窗的认证流程，但不能绕过认证提供方的策略限制。某些提供方，尤其是 Google，仍然可能拒绝在嵌入式 WebView 中完成登录。
 
 ```shell
@@ -584,6 +588,16 @@ pake ./my-app/index.html --name "my-app" --use-local-file
 --inject ./tools/style.css
 ```
 
+#### [download-dir]
+
+指定打包后应用的下载目录，普通链接下载和浏览器原生下载均使用该目录，默认仍为系统 Downloads 文件夹。
+
+```bash
+pake https://example.com --name MyApp --download-dir '~/Documents/MyApp'
+```
+
+支持绝对路径（如 Windows 的 `C:\Users\Alice\Documents\MyApp`）或带引号的 `~/路径`，引号可保留 `~`，让它在应用运行时指向使用者的主目录，而非打包机器的主目录。目录不存在时会在首次下载时创建；不支持相对路径，目录不可访问时下载会失败，不会悄悄改存到其他位置。JSON 配置对应字段为 `downloadDir`，修改已有应用的下载目录需要重新打包。
+
 #### [proxy-url]
 
 为所有网络请求设置代理服务器。支持 HTTP、HTTPS 和 SOCKS5。在 Windows 和 Linux 上可用。在 macOS 上需要 macOS 14+。
@@ -591,6 +605,14 @@ pake ./my-app/index.html --name "my-app" --use-local-file
 ```shell
 --proxy-url http://127.0.0.1:7890
 --proxy-url socks5://127.0.0.1:7891
+```
+
+#### [basic-auth]
+
+当目标站点请求 HTTP Basic 认证时显示登录提示。此选项仅用于 macOS，因为 WKWebView 不会自行显示 401 登录框。凭据在打包后的应用中运行时输入，并且只在当前会话中保留。
+
+```shell
+--basic-auth
 ```
 
 #### [debug]

@@ -69,6 +69,11 @@ ${green('|_|   \\__,_|_|\\_\\___|  can turn any webpage into a desktop app with 
       },
       DEFAULT.inject,
     )
+    .option(
+      '--download-dir <path>',
+      'App download directory (absolute path or ~/path; default: system Downloads)',
+      DEFAULT.downloadDir,
+    )
     .option('--debug', 'Debug build and more output', DEFAULT.debug)
     .option(
       '--json',
@@ -78,6 +83,14 @@ ${green('|_|   \\__,_|_|\\_\\___|  can turn any webpage into a desktop app with 
     .option(
       '--config <path>',
       'Load options from a JSON config file (fields mirror CLI options, see schema/pake.schema.json)',
+    )
+    .addOption(
+      new Option(
+        '--basic-auth',
+        'Prompt for HTTP Basic credentials at runtime (macOS only)',
+      )
+        .default(DEFAULT.basicAuth)
+        .hideHelp(),
     )
     .addOption(
       new Option(
